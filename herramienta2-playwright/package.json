@@ -1,0 +1,23 @@
+{
+  "name": "herramienta2-playwright",
+  "version": "1.0.0",
+  "description": "Automatización de pruebas UI y API con Playwright y Cucumber",
+  "main": "index.js",
+  "scripts": {
+    "test": "cucumber-js",
+    "test:allure": "cucumber-js --import allure-cucumberjs"
+  },
+  "dependencies": {
+    "playwright": "^1.38.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "@babel/register": "^7.28.6",
+    "@cucumber/cucumber": "^10.9.0",
+    "allure-commandline": "^2.37.0",
+    "allure-cucumberjs": "^3.5.0",
+    "allure-js-commons": "^3.5.0",
+    "allure-playwright": "^3.5.0"
+  }
+}

@@ -1,0 +1,8 @@
+com/example/steps/LoginSteps.class
+com/example/runners/TestRunner.class
+com/example/steps/RegisterSteps.class
+com/example/hooks/Hooks.class
+com/example/pages/LoginPage.class
+com/example/context/TestContext.class
+com/example/steps/RegisterApiSteps.class
+com/example/pages/RegisterPage.class
