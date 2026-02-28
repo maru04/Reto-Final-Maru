@@ -9,12 +9,12 @@ import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.And;
 
-import org.openqa.selenium.WebDriver;
-
 import java.io.File;
-
+import org.openqa.selenium.WebDriver;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
+import org.openqa.selenium.TakesScreenshot; 
+import org.openqa.selenium.OutputType;      
 
 public class RegisterSteps {
 
