@@ -21,34 +21,72 @@ pipeline {
         
         stage('Test Selenium') {
             steps {
-                dir('herramienta1-selenium') {
-                    sh 'mvn test'
+                // Usamos catchError para que el pipeline no se detenga si fallan los tests
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    dir('herramienta1-selenium') {
+                        sh 'mvn test'
+                    }
                 }
             }
         }
 
         stage('Test Playwright') {
             steps {
-                dir('herramienta2-playwright') { 
-                    sh 'npx cucumber-js --format allure-cucumberjs/reporter --format-options \'{"resultsDir": "allure-results"}\'' 
+                // Usamos catchError para que el pipeline no se detenga si fallan los tests
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    dir('herramienta2-playwright') { 
+                        sh 'npx cucumber-js --format allure-cucumberjs/reporter --format-options \'{"resultsDir": "allure-results"}\'' 
+                    }
                 }
             }
         }
-    } // <--- Cierra Stages
+
+        // --- NUEVA ETAPA: GENERAR REPORTE ---
+        stage('Generar Reportes Allure') {
+            steps {
+                echo 'Generando reporte estático de Allure para Selenium...'
+                sh 'allure generate herramienta1-selenium/target/allure-results --clean -o herramienta1-selenium/allure-report || true'
+                
+                echo 'Generando reporte estático de Allure para Playwright...'
+                sh 'npx allure generate herramienta2-playwright/allure-results --clean -o herramienta2-playwright/allure-report || true'
+            }
+        }
+
+        // --- NUEVA ETAPA: PUBLICAR REPORTE (Lo que te pedía el profe) ---
+        stage('Publicar Allure Report Selenium') {
+            steps {
+                echo 'Publicando reporte Selenium...'
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'herramienta1-selenium/allure-report',
+                    reportFiles: 'index.html',
+                    reportName: 'Allure Report - Selenium'
+                ])
+            }
+        }
+
+        stage('Publicar Allure Report Playwright') {
+            steps {
+                echo 'Publicando reporte Playwright...'
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'herramienta2-playwright/allure-report',
+                    reportFiles: 'index.html',
+                    reportName: 'Allure Report - Playwright'
+                ])
+            }
+        }
+    }
 
     post {
         always {
-            echo 'Generando reportes de Allure...'
-            
-            // --- Selenium ---
-            // Generar reporte estático y archivar
-            sh 'allure generate herramienta1-selenium/target/allure-results --clean -o herramienta1-selenium/allure-report || true'
-            archiveArtifacts artifacts: 'herramienta1-selenium/allure-report/**', fingerprint: true
-
-            // --- Playwright ---
-            // Generar reporte estático y archivar
-            sh 'npx allure generate herramienta2-playwright/allure-results --clean -o herramienta2-playwright/allure-report || true'
-            archiveArtifacts artifacts: 'herramienta2-playwright/allure-report/**', fingerprint: true
+            echo 'Pipeline Finalizado.'
+            // Mantenemos esto por si acaso quieres tener los zips también
+            archiveArtifacts artifacts: 'herramienta1-selenium/allure-report/**, herramienta2-playwright/allure-report/**', fingerprint: true
         }
     }
-} 
+}
