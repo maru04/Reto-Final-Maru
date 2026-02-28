@@ -95,6 +95,11 @@ public class RegisterSteps {
         } catch (Exception e) {
             System.out.println("Error al intentar screenshot: " + e.getMessage());
         }
+      
+        // Espera un poco a que la alerta aparezca (ejemplo: 2 segundos)
+        try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
+    
+
         // Validar la alerta 
         String alert = registerPage.capturarAlerta();
         Assert.assertTrue("El mensaje de alerta es incorrecto", alert.contains("This user already exist"));
