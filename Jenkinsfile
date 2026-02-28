@@ -1,16 +1,20 @@
 pipeline {
     agent any
     
-    // Esto ayuda a que el Mac encuentre los comandos de Node
     environment {
+        // Aseguramos que Java y Maven estén en el PATH si es necesario
         PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
     }
 
     stages {
         stage('Instalar Dependencias') {
             steps {
-                echo 'Instalando dependencias de Selenium...'
-                dir('herramienta1-selenium') { sh 'npm install' }
+                echo 'Instalando dependencias de Selenium (Maven)...'
+                dir('herramienta1-selenium') { 
+                    // Maven usualmente instala dependencias al correr el test, 
+                    // pero si necesitas un 'clean install' especial, se pone aquí:
+                    sh 'mvn clean install -DskipTests' 
+                }
                 
                 echo 'Instalando dependencias de Playwright...'
                 dir('herramienta2-playwright') { sh 'npm install' }
@@ -20,17 +24,16 @@ pipeline {
         stage('Test Selenium') {
             steps {
                 dir('herramienta1-selenium') {
-                    // Asegúrate que en tool1/package.json el script se llame "test"
-                    sh 'npm test'
+                    // Comando de Maven para ejecutar pruebas
+                    sh 'mvn test'
                 }
             }
         }
 
         stage('Test Playwright') {
             steps {
-                dir('herramienta2-playwright') {
-                    // Comando para correr Cucumber y generar reporte Allure
-                    sh 'npx cucumber-js --format allure-cucumberjs/reporter --format-options \'{"resultsDir": "allure-results"}\''
+                dir('herramienta2-playwright') { 
+                    sh 'npx cucumber-js --format allure-cucumberjs/reporter --format-options \'{"resultsDir": "allure-results"}\'' 
                 }
             }
         }
