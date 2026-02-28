@@ -10,6 +10,10 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.And;
 
 import org.openqa.selenium.WebDriver;
+
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 
 public class RegisterSteps {
@@ -83,8 +87,19 @@ public class RegisterSteps {
 
     @Then("se muestra el mensaje de usuario existente")
     public void validarUsuarioExistente() {
-
+        // Validar la alerta 
         String alert = registerPage.capturarAlerta();
-        Assert.assertTrue(alert.contains("This user already exist"));
+        Assert.assertTrue("El mensaje de alerta es incorrecto", alert.contains("This user already exist"));
+
+        // Tomar captura de pantalla correctamente en Selenium/Java
+        try {
+            
+            File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            // Guarda la foto en la carpeta de resultados de Allure
+            FileUtils.copyFile(scrFile, new File("target/allure-results/fail-register.png"));
+            System.out.println("Screenshot guardado exitosamente");
+        } catch (Exception e) {
+            System.out.println("Error al tomar screenshot: " + e.getMessage());
+        }
     }
 }
