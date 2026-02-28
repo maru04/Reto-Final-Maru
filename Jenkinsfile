@@ -11,8 +11,6 @@ pipeline {
             steps {
                 echo 'Instalando dependencias de Selenium (Maven)...'
                 dir('herramienta1-selenium') { 
-                    // Maven usualmente instala dependencias al correr el test, 
-                    // pero si necesitas un 'clean install' especial, se pone aquí:
                     sh 'mvn clean install -DskipTests' 
                 }
                 
@@ -24,7 +22,6 @@ pipeline {
         stage('Test Selenium') {
             steps {
                 dir('herramienta1-selenium') {
-                    // Comando de Maven para ejecutar pruebas
                     sh 'mvn test'
                 }
             }
@@ -37,8 +34,8 @@ pipeline {
                 }
             }
         }
-    } /
-    
+    } // <--- Cierra Stages
+
     post {
         always {
             echo 'Generando reportes de Allure...'
