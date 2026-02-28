@@ -37,5 +37,21 @@ pipeline {
                 }
             }
         }
+    } /
+    
+    post {
+        always {
+            echo 'Generando reportes de Allure...'
+            
+            // --- Selenium ---
+            // Generar reporte estático y archivar
+            sh 'allure generate herramienta1-selenium/target/allure-results --clean -o herramienta1-selenium/allure-report || true'
+            archiveArtifacts artifacts: 'herramienta1-selenium/allure-report/**', fingerprint: true
+
+            // --- Playwright ---
+            // Generar reporte estático y archivar
+            sh 'npx allure generate herramienta2-playwright/allure-results --clean -o herramienta2-playwright/allure-report || true'
+            archiveArtifacts artifacts: 'herramienta2-playwright/allure-report/**', fingerprint: true
+        }
     }
-}
+} 

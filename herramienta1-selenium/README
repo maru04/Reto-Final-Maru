@@ -1,0 +1,24 @@
+## Instalación y Ejecución
+
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone [https://github.com/maru04/Reto-Final-Maru.git](https://github.com/maru04/Reto-Final-Maru.git)
+    cd Reto-Final-Maru/herramienta1-selenium
+    ```
+
+2.  **Ejecutar pruebas:**
+    ```bash
+    mvn clean test
+    ```
+
+3.  **Generar y visualizar reporte Allure:**
+    ```bash
+    allure serve target/allure-results
+    ```
+
+## Automatización en Jenkins
+Para configurar este proyecto en Jenkins, utiliza el `Jenkinsfile` ubicado en la raíz del repositorio. Este pipeline realiza los siguientes pasos para Selenium:
+
+1.  **Instalar Dependencias**: Ejecuta `mvn clean install -DskipTests` para descargar librerías y compilar sin correr tests aún.
+2.  **Ejecutar Pruebas**: Ejecuta `mvn test` para correr la suite de pruebas.
+3.  **Reportes**: Configura `allure serve` para visualizar los resultados (requiere plugin de Allure en Jenkins).
