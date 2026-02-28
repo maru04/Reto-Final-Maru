@@ -87,19 +87,17 @@ public class RegisterSteps {
 
     @Then("se muestra el mensaje de usuario existente")
     public void validarUsuarioExistente() {
+        // 1. Tomar la foto PRIMERO (para intentar capturar la alerta activa)
+        try {
+            File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            FileUtils.copyFile(scrFile, new File("target/allure-results/intentodecaptura.png"));
+            System.out.println("Intento de screenshot realizado");
+        } catch (Exception e) {
+            System.out.println("Error al intentar screenshot: " + e.getMessage());
+        }
         // Validar la alerta 
         String alert = registerPage.capturarAlerta();
         Assert.assertTrue("El mensaje de alerta es incorrecto", alert.contains("This user already exist"));
 
-        // Tomar captura de pantalla correctamente en Selenium/Java
-        try {
-            
-            File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-            // Guarda la foto en la carpeta de resultados de Allure
-            FileUtils.copyFile(scrFile, new File("target/allure-results/fail-register.png"));
-            System.out.println("Screenshot guardado exitosamente");
-        } catch (Exception e) {
-            System.out.println("Error al tomar screenshot: " + e.getMessage());
-        }
     }
 }
